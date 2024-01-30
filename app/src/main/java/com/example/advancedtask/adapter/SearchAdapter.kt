@@ -1,39 +1,62 @@
 package com.example.advancedtask.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.advancedtask.data.SearchModel
 import com.example.advancedtask.databinding.SearchListGridBinding
-import com.google.android.material.transition.Hold
 
-class SearchAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var holdGrid: Hold
-
+class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchModelDiffCallback)
+{
     interface ItemClick {
-        fun onClick(view: View, position: Int)
+        fun itemClick(view: View, position: Int, item: SearchModel)
     }
 
     var itemClick: ItemClick? = null
 
-    inner class Hold(binding: SearchListGridBinding) : RecyclerView.ViewHolder(binding.root) {
-        val thumbnail = binding.ivThumbnail
-        val sitename = binding.tvSitename
-        val datetime = binding.tvDatetime
+
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val binding = SearchListGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Holder(binding, itemClick)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        Hold(SearchListGridBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val item = getItem(position)
+        holder.setView(item)
+    }
 
-    override fun getItemCount(): Int = 80
+    class Holder(private val binding: SearchListGridBinding, private val itemClick: ItemClick?) : RecyclerView.ViewHolder(binding.root) {
+        fun setView(item: SearchModel) = with(binding) {
+            tvSitename.text = item.title
+            tvDatetime.text = item.date
+            Log.d("item","$item")
+            Glide.with(ivThumbnail.context).load(item.thumbnail).into(ivThumbnail)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {
-            itemClick?.onClick(it,position)
-        }
-        holdGrid = holder as Hold
-        with (holdGrid) {
 
         }
     }
+
+    companion object {
+        val SearchModelDiffCallback = object : DiffUtil.ItemCallback<SearchModel>() {
+            override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean =
+                oldItem.thumbnail == newItem.thumbnail
+
+            override fun areContentsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean =
+                oldItem == newItem
+        }
+    }
+
+
+
+
+
+
+
 }
