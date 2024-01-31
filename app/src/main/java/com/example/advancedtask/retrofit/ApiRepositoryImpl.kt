@@ -7,6 +7,7 @@ import com.example.advancedtask.utils.ApiKey.Companion.REST_API_KEY
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class ApiRepositoryImpl: ApiRepository {
     private val searchList: ArrayList<SearchModel> = arrayListOf()
@@ -41,6 +42,7 @@ class ApiRepositoryImpl: ApiRepository {
         if (imageApi.isSuccessful) {
             imageApi.body()?.documents?.map { document ->
                 SearchModel(
+                    id = UUID.randomUUID(),
                     thumbnail = document.thumbnailUrl!!.toUri(),
                     title = document.displaySitename.toString(),
                     date = dateTimeFormatter(document.datetime.toString()),

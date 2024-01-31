@@ -8,9 +8,5 @@ import java.util.UUID
 @Parcelize
 data class SaveModel(
     val query: String,
-    val position: Int,
-    val thumbnail: Uri,
-    val title: String,
-    val date: String,
-    var bookMark: Boolean = false
+    val position: Int
 ): Parcelable

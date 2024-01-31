@@ -36,7 +36,7 @@ class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchMod
         holder.setView(item)
 
         holder.itemView.setOnClickListener {
-            Log.d("itemIsClicked","야호: $item")
+            Log.d("itemIsClicked","클릭: $item")
             listener?.onItemClick(it,position, item)
         }
     }
@@ -55,16 +55,22 @@ class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchMod
 
     companion object {
         val SearchModelDiffCallback = object : DiffUtil.ItemCallback<SearchModel>() {
-            override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean =
-                oldItem.thumbnail == newItem.thumbnail
+            override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
+                Log.d("SpecialThanks", "올드 $oldItem")
+                Log.d("SpecialThanks", "뉴진 $newItem")
+                return oldItem.id == newItem.id
+            }
 
-            override fun areContentsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean =
-                oldItem == newItem
+
+            override fun areContentsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
+                Log.d("SpecialThanks", "올드 $oldItem")
+                Log.d("SpecialThanks", "뉴진 $newItem")
+                return oldItem == newItem
+            }
         }
+
+
     }
-
-
-
 
 
 

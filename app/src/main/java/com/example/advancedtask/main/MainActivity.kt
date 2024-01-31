@@ -15,6 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.advancedtask.adapter.MainViewPager2Adapter
 import com.example.advancedtask.data.SearchModel
+import com.example.advancedtask.data.SelectedList
+import com.example.advancedtask.data.SelectedList.addModel
+import com.example.advancedtask.data.SelectedList.addTag
+import com.example.advancedtask.data.SelectedList.keepTrackOfQueryAndPosition
+import com.example.advancedtask.data.SelectedList.removeModel
 import com.example.advancedtask.databinding.ActivityMainBinding
 import com.example.advancedtask.retrofit.ApiRepositoryImpl
 import com.example.advancedtask.search.SearchFragment
@@ -63,16 +68,22 @@ class MainActivity : AppCompatActivity() {
         viewModel.selectedItem.observe(this) {
             setSelectedItems(it)
             Log.d("SpecialThanks","우와 Getting item from the Viewmodel to the main activity $it")
+            Log.d("SpecialThanks","북마크 값 맞음? ${it.bookMark}")
 
         }
     }
 
     private fun setSelectedItems(item: SearchModel?) {
         when (item?.bookMark) {
-            true -> selectedItems.add(item)
-            false -> selectedItems.remove(item)
-            null -> Unit
+            true -> {
+                addModel(item)
+            }
+            false -> {
+                removeModel(item)
+            }
+            else -> Unit
         }
+
         Log.d("SpecialThanks", "으어 Setting selected ITems: $selectedItems")
 
     }

@@ -18,7 +18,6 @@ import com.example.advancedtask.adapter.SearchAdapter
 import com.example.advancedtask.data.SearchModel
 import com.example.advancedtask.databinding.FragmentSearchBinding
 import com.example.advancedtask.databinding.SearchListGridBinding
-import com.example.advancedtask.main.MainActivity
 import com.example.advancedtask.retrofit.ApiRepositoryImpl
 
 class SearchFragment : Fragment() {
@@ -84,6 +83,8 @@ class SearchFragment : Fragment() {
         binding.btnSearch.setOnClickListener {
 
             viewModel.searchPosts(1)
+            hideKeyboard()
+            saveData()
 
         }
     }
@@ -105,8 +106,8 @@ class SearchFragment : Fragment() {
             override fun onItemClick(view: View, position: Int, item: SearchModel) {
                 Log.d("SpecialThanks","오예 GotFragmentFromAdapter : $item")
                 viewModel.selectItem(position, item)
-                hideKeyboard()
-                saveData()
+
+
 
             }
         })
