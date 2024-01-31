@@ -59,18 +59,13 @@ class SearchViewModel(private val repository: ApiRepository) : ViewModel() {
     }
 
     fun selectItem(position: Int, item: SearchModel) {
-        when (item.bookMark) {
-            true -> {
-                _myCustomPosts.value?.get(position)?.bookMark = false
-                item.bookMark = false
-
-            }
-            false -> {
-                _myCustomPosts.value?.get(position)?.bookMark = true
-                item.bookMark = true
-            }
-
+        val isBookmarked = when (item.bookMark) {
+            true -> false
+            false -> true
         }
+        _myCustomPosts.value?.get(position)?.bookMark = isBookmarked
+        item.bookMark = isBookmarked
+
         Log.d("SpecialThanks","예야 SettingItemBookmark in Viewmodel : $item")
         _selectedItem.postValue(item)
 

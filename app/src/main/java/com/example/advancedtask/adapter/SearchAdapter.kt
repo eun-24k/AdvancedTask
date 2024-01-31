@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +45,7 @@ class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchMod
         fun setView(item: SearchModel) = with(binding) {
             tvSitename.text = item.title
             tvDatetime.text = item.date
+            icLike.isVisible = item.bookMark
             Log.d("item","$item")
             Glide.with(ivThumbnail.context).load(item.thumbnail).into(ivThumbnail)
 
