@@ -5,9 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".saved.SavedFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_save"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        tools:listitem="@layout/search_list_grid"
+        />
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.example.advancedtask.search
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -72,19 +74,9 @@ class SearchFragment : Fragment() {
         setSearch()
         setAdapter()
         setSearchButton()
-        getSelectedItem()
 
     }
 
-    private fun getSelectedItem() {
-
-        viewModel.myCustomPosts.observe(viewLifecycleOwner) {searchModel ->
-            Log.d("SpecialThanks","Observing Selected Item from Search Fragment $searchModel")
-
-            adapter?.submitList(searchModel)
-
-        }
-    }
 
     private fun setSearchButton() {
         binding.btnSearch.setOnClickListener {
@@ -111,6 +103,7 @@ class SearchFragment : Fragment() {
             override fun onItemClick(view: View, position: Int, item: SearchModel) {
                 Log.d("SpecialThanks","오예 GotFragmentFromAdapter : $item")
                 viewModel.selectItem(position, item)
+                hideKeyboard()
 
             }
         })
@@ -140,6 +133,7 @@ class SearchFragment : Fragment() {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let { viewModel.searchPosts(it, 1) }
+                hideKeyboard()
                 return true
             }
 
@@ -151,4 +145,10 @@ class SearchFragment : Fragment() {
 
         })
     }
+    private fun hideKeyboard(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(activity?.window?.decorView?.applicationWindowToken, 0)
+    }
+
+    
 }
