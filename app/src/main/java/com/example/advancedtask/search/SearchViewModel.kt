@@ -21,7 +21,8 @@ class SearchViewModel(private val repository: ApiRepository) : ViewModel() {
     private val _recyclerViewState: MutableLiveData<Parcelable> = MutableLiveData()
     val recyclerViewState: LiveData<Parcelable> get() = _recyclerViewState
 
-    private var _search = ""
+    private val _search: MutableLiveData<String> = MutableLiveData()
+    val search : LiveData<String> = _search
 
     fun saveRecyclerViewState(state:Parcelable) {
         _recyclerViewState.value = state
@@ -43,8 +44,8 @@ class SearchViewModel(private val repository: ApiRepository) : ViewModel() {
     fun searchPosts(page: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             when {
-                _search.isEmpty().not() -> {
-                    val response = repository.searchData(_search, "accuracy", page)
+                _search.value.isNullOrEmpty().not() -> {
+                    val response = repository.searchData(_search.value!!, "accuracy", page)
                     Log.d("response", response.toString())
                     _myCustomPosts.postValue(response.toMutableList())
                 }
@@ -55,7 +56,7 @@ class SearchViewModel(private val repository: ApiRepository) : ViewModel() {
     }
 
     fun searchTextLive(searchText: String) {
-        _search = searchText
+        _search.value = searchText
     }
 
     fun selectItem(position: Int, item: SearchModel) {

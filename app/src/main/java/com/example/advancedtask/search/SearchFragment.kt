@@ -75,6 +75,8 @@ class SearchFragment : Fragment() {
         setAdapter()
         setSearchButton()
 
+        loadData()
+
     }
 
 
@@ -104,6 +106,7 @@ class SearchFragment : Fragment() {
                 Log.d("SpecialThanks","오예 GotFragmentFromAdapter : $item")
                 viewModel.selectItem(position, item)
                 hideKeyboard()
+                saveData()
 
             }
         })
@@ -134,6 +137,7 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let { viewModel.searchPosts(it, 1) }
                 hideKeyboard()
+                saveData()
                 return true
             }
 
@@ -150,5 +154,21 @@ class SearchFragment : Fragment() {
         imm.hideSoftInputFromWindow(activity?.window?.decorView?.applicationWindowToken, 0)
     }
 
-    
+    private fun saveData() {
+        val pref = this.activity?.getSharedPreferences("pref",0)
+        val edit = pref?.edit() // 수정 모드
+        viewModel.search.observe(viewLifecycleOwner) {
+            edit?.putString("text", it)
+        }
+        edit?.apply() // 저장완료
+    }
+
+    private fun loadData() {
+        val pref = this.activity?.getSharedPreferences("pref",0)
+        // 1번째 인자는 키, 2번째 인자는 데이터가 존재하지 않을경우의 값
+        if (pref != null) {
+            binding.etSearch.setQuery(pref.getString("text",""), true)
+
+        }
+    }
 }
