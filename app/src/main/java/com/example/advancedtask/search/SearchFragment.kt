@@ -1,5 +1,7 @@
 package com.example.advancedtask.search
 
+import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -8,12 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.fragment.app.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.advancedtask.adapter.SearchAdapter
 import com.example.advancedtask.data.SearchModel
 import com.example.advancedtask.databinding.FragmentSearchBinding
-import com.example.advancedtask.retrofit.ApiRepository
+import com.example.advancedtask.databinding.SearchListGridBinding
+import com.example.advancedtask.main.MainActivity
 import com.example.advancedtask.retrofit.ApiRepositoryImpl
 
 class SearchFragment : Fragment() {
@@ -21,55 +24,47 @@ class SearchFragment : Fragment() {
     companion object {
         fun newInstance() = SearchFragment()
     }
-
+//    private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+//        ActivityResultContracts.StartActivityForResult()
+//    ) { result: ActivityResult ->
+//        if (result.resultCode == Activity.RESULT_OK) {
+//            val data: Intent? = result.data
+//            // 결과를 처리하는 코드를 여기에 작성합니다.
+//        }
+//    }
     private lateinit var binding: FragmentSearchBinding
+
+    private lateinit var binding2 : SearchListGridBinding
 
     private var _adapter: SearchAdapter? = null
     private val adapter get() = _adapter
 
     private lateinit var item: MutableList<SearchModel>
 
-
-
-    private val viewModel by lazy {
-        val repository = ApiRepositoryImpl()
-        ViewModelProvider(this, SearchViewModel.SearchViewModelFactory(repository)).get(SearchViewModel::class.java)
+    private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // 결과 처리
+        }
     }
-
-
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), SearchViewModel.SearchViewModelFactory(ApiRepositoryImpl()))[SearchViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater)
+        binding2 = SearchListGridBinding.inflate(inflater)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
-    }
 
-    private fun initViewModel() {
-//        val adapter = SearchAdapter()
-//        with(viewModel) {
-//            myCustomPosts.observe(viewLifecycleOwner) { result ->
-//                if (result.isSuccessful) {
-//                    Log.d("test", "$result")
-//                    // Save Search Data
-//                    adapter.submitList(result.body()!!.documents)
-//                    for (i in result.body()!!.documents!!) {
-//                        Log.d("test", "$i")
-//                    }
-//                } else {
-//                    Log.d("test", "fail")
-//                }
-//
-//            }
-//        }
+
     }
 
 
@@ -77,13 +72,25 @@ class SearchFragment : Fragment() {
         setSearch()
         setAdapter()
         setSearchButton()
+        getSelectedItem()
 
+    }
+
+    private fun getSelectedItem() {
+
+        viewModel.myCustomPosts.observe(viewLifecycleOwner) {searchModel ->
+            Log.d("SpecialThanks","Observing Selected Item from Search Fragment $searchModel")
+
+            adapter?.submitList(searchModel)
+
+        }
     }
 
     private fun setSearchButton() {
         binding.btnSearch.setOnClickListener {
 
             viewModel.searchPosts(1)
+
         }
     }
 
@@ -98,10 +105,34 @@ class SearchFragment : Fragment() {
 
             Log.d("myCustomPosts","$models")
             adapter?.submitList(item)
+
         }
+        _adapter!!.setOnItemClickListener(object : SearchAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, position: Int, item: SearchModel) {
+                Log.d("SpecialThanks","오예 GotFragmentFromAdapter : $item")
+                viewModel.selectItem(position, item)
+
+            }
+        })
+
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("Special Thanks", "으앙 onDestroyView")
     }
 
+    override fun onPause() {
+        super.onPause()
+        binding.rvSearch.layoutManager?.onSaveInstanceState()
+            ?.let { viewModel.saveRecyclerViewState(it) }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.rvSearch.layoutManager?.onRestoreInstanceState(viewModel.recyclerViewState.value)
+
+    }
 
     private fun setSearch() = with(binding){
         etSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,

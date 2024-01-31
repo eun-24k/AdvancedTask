@@ -13,26 +13,34 @@ import com.example.advancedtask.databinding.SearchListGridBinding
 
 class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchModelDiffCallback)
 {
-    interface ItemClick {
-        fun itemClick(view: View, position: Int, item: SearchModel)
+    interface OnItemClickListener {
+        fun onItemClick(view: View, position: Int, item: SearchModel)
     }
 
-    var itemClick: ItemClick? = null
+    private var listener: OnItemClickListener? = null
 
 
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = SearchListGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return Holder(binding, itemClick)
+        return Holder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = getItem(position)
         holder.setView(item)
+
+        holder.itemView.setOnClickListener {
+            Log.d("itemIsClicked","야호: $item")
+            listener?.onItemClick(it,position, item)
+        }
     }
 
-    class Holder(private val binding: SearchListGridBinding, private val itemClick: ItemClick?) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(private val binding: SearchListGridBinding, private val onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(binding.root) {
         fun setView(item: SearchModel) = with(binding) {
             tvSitename.text = item.title
             tvDatetime.text = item.date
