@@ -56,15 +56,13 @@ class SearchAdapter() : ListAdapter<SearchModel, SearchAdapter.Holder>(SearchMod
     companion object {
         val SearchModelDiffCallback = object : DiffUtil.ItemCallback<SearchModel>() {
             override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
-                Log.d("SpecialThanks", "올드 $oldItem")
-                Log.d("SpecialThanks", "뉴진 $newItem")
+
                 return oldItem.id == newItem.id
             }
 
 
             override fun areContentsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
-                Log.d("SpecialThanks", "올드 $oldItem")
-                Log.d("SpecialThanks", "뉴진 $newItem")
+
                 return oldItem == newItem
             }
         }

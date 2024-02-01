@@ -9,8 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.advancedtask.data.SaveModel
 import com.example.advancedtask.data.SearchModel
-import com.example.advancedtask.data.SelectedList
-import com.example.advancedtask.data.SelectedList.keepTrackOfQueryAndPosition
+import com.example.advancedtask.data.SelectedList.selectedItems
 import com.example.advancedtask.retrofit.ApiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -82,20 +81,25 @@ class SearchViewModel(private val repository: ApiRepository) : ViewModel() {
         when (item.bookMark) {
             true -> {
                 post?.get(position)?.bookMark  = false
+//                list?.remove(item)
                 item.bookMark = false
-                list?.remove(item)
+
             }
             false -> {
                 post?.get(position)?.bookMark  = true
                 item.bookMark = true
-                list?.add(item)
+//                list?.add(item)
             }
         }
 //        synchronizeLikes()
         Log.d("SpecialThanks","예야 SettingItemBookmark in Viewmodel : $item")
         _selectedItem.value = item
         _myCustomPosts.value = post!!
-        _selectedList.value = list
+    }
+
+    fun setSelectedList() {
+        _selectedList.value = selectedItems
+
     }
 //
 //    private fun synchronizeLikes() {

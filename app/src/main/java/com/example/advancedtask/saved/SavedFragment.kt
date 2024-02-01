@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.advancedtask.R
 import com.example.advancedtask.adapter.SearchAdapter
 import com.example.advancedtask.data.SelectedList
+import com.example.advancedtask.data.SelectedList.addModel
+import com.example.advancedtask.data.SelectedList.removeModel
 import com.example.advancedtask.data.SelectedList.selectedItems
 import com.example.advancedtask.databinding.FragmentSavedBinding
 import com.example.advancedtask.databinding.FragmentSearchBinding
@@ -58,7 +60,14 @@ class SavedFragment : Fragment() {
         if(selectedItems.isEmpty().not()) {
             Log.d("SpecialThanks","북마크 값 잘 저장 됨? ${selectedItems[0].bookMark}")
         }
+        viewModel.setSelectedList()
+
         viewModel.selectedList.observe(viewLifecycleOwner) {
+            adapter?.submitList(null)
+            Log.d("SpecialThanks","input $selectedItems")
+            if(selectedItems.isEmpty().not()) {
+                Log.d("SpecialThanks","boolean ${selectedItems[0].bookMark}")
+            }
             adapter?.submitList(selectedItems)
         }
 
