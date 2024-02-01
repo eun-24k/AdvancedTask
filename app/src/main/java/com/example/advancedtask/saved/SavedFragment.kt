@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.advancedtask.R
 import com.example.advancedtask.adapter.SearchAdapter
+import com.example.advancedtask.data.SearchModel
 import com.example.advancedtask.data.SelectedList
 import com.example.advancedtask.data.SelectedList.addModel
 import com.example.advancedtask.data.SelectedList.removeModel
@@ -70,6 +71,12 @@ class SavedFragment : Fragment() {
             }
             adapter?.submitList(selectedItems)
         }
+        _adapter!!.setOnItemClickListener(object : SearchAdapter.OnItemClickListener {
+            override fun onItemClick(view: View, position: Int, item: SearchModel) {
+                viewModel.selectItem(position,item)
+            }
+
+        })
 
     }
 
