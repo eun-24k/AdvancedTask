@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".search.SearchFragment">
+    tools:context=".fragment.search.SearchFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_layout"
@@ -13,7 +13,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
+        <ProgressBar
+            android:id="@+id/pb_search"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <LinearLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
@@ -28,7 +37,7 @@
 
 
 
-            <androidx.appcompat.widget.SearchView
+            <EditText
                 android:id="@+id/et_search"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
@@ -43,6 +52,31 @@
 
 
         </LinearLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fb_top"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="32dp"
+            android:backgroundTint="@color/white"
+            android:elevation="0dp"
+            android:hapticFeedbackEnabled="true"
+            android:src="@drawable/ai_selector_smartseach_fbtop"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabCustomSize="40dp"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/rl_search"
+            app:maxImageSize="40dp"
+            app:tint="@null"
+            tools:ignore="ContentDescription">
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_search"
